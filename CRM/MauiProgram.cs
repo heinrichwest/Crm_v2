@@ -19,7 +19,7 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
 
         // Define your connection string
-        var connectionString = "server=localhost;database=your_db_name;user=your_user;password=your_password;";
+        var connectionString = "server=localhost;database=your_db_name;user=your_user;password=Zuluzaan1!;";
 
         // Add DbContext with MySQL
         builder.Services.AddDbContext<AppDbContext>(options =>
