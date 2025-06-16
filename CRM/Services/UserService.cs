@@ -20,6 +20,14 @@ namespace CRM.Services
         }
 
         /// <summary>
+        /// Retrieves a user by its identifier.
+        /// </summary>
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
+
+        /// <summary>
         /// Creates a new user entry in the database.
         /// </summary>
         /// <param name="user">User details to insert.</param>
@@ -29,6 +37,28 @@ namespace CRM.Services
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user;
+        }
+
+        /// <summary>
+        /// Updates an existing user.
+        /// </summary>
+        public async Task UpdateUserAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Deletes a user by its identifier.
+        /// </summary>
+        public async Task DeleteUserAsync(int id)
+        {
+            var existing = await _context.Users.FindAsync(id);
+            if (existing != null)
+            {
+                _context.Users.Remove(existing);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

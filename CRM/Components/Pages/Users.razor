@@ -1,0 +1,104 @@
+@page "/users"
+@using CRM.Models
+@inject CRM.Services.UserService UserService
+
+<h3>User Management</h3>
+
+@if (users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <button class="btn btn-primary mb-3" @onclick="ShowAddForm">Add User</button>
+
+    @if (isFormVisible)
+    {
+        <EditForm Model="editUser" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <InputText class="form-control" @bind-Value="editUser.Name" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <InputText class="form-control" @bind-Value="editUser.Email" />
+            </div>
+            <button class="btn btn-success me-2" type="submit">Save</button>
+            <button class="btn btn-secondary" type="button" @onclick="HideForm">Cancel</button>
+        </EditForm>
+    }
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary me-1" @onclick="() => Edit(user)">Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => Delete(user.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<User>? users;
+    private bool isFormVisible;
+    private User editUser = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserService.GetAllUsersAsync();
+    }
+
+    private void ShowAddForm()
+    {
+        editUser = new User();
+        isFormVisible = true;
+    }
+
+    private void Edit(User user)
+    {
+        editUser = new User { Id = user.Id, Name = user.Name, Email = user.Email };
+        isFormVisible = true;
+    }
+
+    private void HideForm()
+    {
+        isFormVisible = false;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (editUser.Id == 0)
+        {
+            await UserService.CreateUserAsync(editUser);
+        }
+        else
+        {
+            await UserService.UpdateUserAsync(editUser);
+        }
+
+        users = await UserService.GetAllUsersAsync();
+        isFormVisible = false;
+    }
+
+    private async Task Delete(int id)
+    {
+        await UserService.DeleteUserAsync(id);
+        users = await UserService.GetAllUsersAsync();
+    }
+}
