@@ -1,8 +1,14 @@
 @page "/users"
 @using CRM.Models
 @inject CRM.Services.UserService UserService
+@using System
 
 <h3>User Management</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
 
 @if (users == null)
 {
@@ -58,10 +64,18 @@ else
     private List<User>? users;
     private bool isFormVisible;
     private User editUser = new();
+    private string? errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        users = await UserService.GetAllUsersAsync();
+        try
+        {
+            users = await UserService.GetAllUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load users: {ex.Message}";
+        }
     }
 
     private void ShowAddForm()
@@ -83,22 +97,36 @@ else
 
     private async Task HandleValidSubmit()
     {
-        if (editUser.Id == 0)
+        try
         {
-            await UserService.CreateUserAsync(editUser);
-        }
-        else
-        {
-            await UserService.UpdateUserAsync(editUser);
-        }
+            if (editUser.Id == 0)
+            {
+                await UserService.CreateUserAsync(editUser);
+            }
+            else
+            {
+                await UserService.UpdateUserAsync(editUser);
+            }
 
-        users = await UserService.GetAllUsersAsync();
-        isFormVisible = false;
+            users = await UserService.GetAllUsersAsync();
+            isFormVisible = false;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to save user: {ex.Message}";
+        }
     }
 
     private async Task Delete(int id)
     {
-        await UserService.DeleteUserAsync(id);
-        users = await UserService.GetAllUsersAsync();
+        try
+        {
+            await UserService.DeleteUserAsync(id);
+            users = await UserService.GetAllUsersAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to delete user: {ex.Message}";
+        }
     }
 }
