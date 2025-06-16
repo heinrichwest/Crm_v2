@@ -33,6 +33,12 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        return builder.Build();
+        var app = builder.Build();
+
+        // Ensure database schema exists on startup
+        var dbInitializer = new CRM.DatabaseConnection();
+        dbInitializer.EnsureTables();
+
+        return app;
     }
 }

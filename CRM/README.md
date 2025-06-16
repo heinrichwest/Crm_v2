@@ -20,6 +20,12 @@ A cross-platform Customer Relationship Management system built with .NET MAUI an
 3. Run `dotnet build`
 4. Run the application
 
+### Database setup
+The application uses MySQL. Update the connection string in
+`MauiProgram.cs` with your database credentials. On the first run the
+application will automatically create the required tables (`Users` and
+`Clients`) if they do not exist.
+
 ## Technologies Used
 - .NET MAUI
 - Blazor
