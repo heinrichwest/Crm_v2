@@ -1,4 +1,5 @@
-﻿using CRM.Data;
+using CRM.Data;
+using CRM.Models;
 using Microsoft.EntityFrameworkCore; // if you need access to AppDbContext
 
 namespace CRM.Services
@@ -17,9 +18,5 @@ namespace CRM.Services
         {
             return await _context.Clients.ToListAsync();
         }
-    }
-
-    public class Client
-    {
     }
 }
