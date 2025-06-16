@@ -10,7 +10,7 @@ namespace CRM.Data
         {
         }
 
-        public DbSet<Services.Client> Clients => Set<Services.Client>();
+        public DbSet<Client> Clients => Set<Client>();
         public DbSet<User> Users => Set<User>();
     }
 }
